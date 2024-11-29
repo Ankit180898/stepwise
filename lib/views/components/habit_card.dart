@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:stepwise/data/providers/database_provider.dart';
 
-class HabitCard extends StatelessWidget {
+class HabitCard extends HookConsumerWidget {
   const HabitCard(
       {super.key,
       required this.title,
@@ -13,13 +15,31 @@ class HabitCard extends StatelessWidget {
   final String title;
   final int streak;
   final double progress;
-  final String habitId;
+  final int habitId;
   final bool isCompleted;
   final DateTime date;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final colorScheme = Theme.of(context).colorScheme;
+    Future<void> onComplete() async {
+      await ref.read(databaseProvider).completeHabit(habitId, date);
+
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: const Text(
+            "Great Job! \nHabit Completed",
+            style: TextStyle(
+                fontWeight: FontWeight.w500, fontSize: 16, color: Colors.white),
+          ),
+          behavior: SnackBarBehavior.floating,
+          backgroundColor: colorScheme.primary,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        ));
+      }
+    }
+
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(16),
@@ -67,7 +87,40 @@ class HabitCard extends StatelessWidget {
                     )
                   ]
                 ],
-              ))
+              )),
+              const SizedBox(
+                width: 16,
+              ),
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16),
+                  gradient: isCompleted
+                      ? LinearGradient(
+                          colors: [colorScheme.primary, colorScheme.surface])
+                      : null,
+                  color:
+                      isCompleted ? colorScheme.surfaceContainerHighest : null,
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: onComplete,
+                    borderRadius: BorderRadius.circular(16),
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Icon(
+                        isCompleted
+                            ? Icons.check_circle
+                            : Icons.circle_outlined,
+                        color: isCompleted
+                            ? colorScheme.onPrimary
+                            : colorScheme.onSurfaceVariant,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         ),

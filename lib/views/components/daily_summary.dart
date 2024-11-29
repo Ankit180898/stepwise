@@ -14,6 +14,8 @@ class DailySummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ColorScheme = Theme.of(context).colorScheme;
+    final progress = totalTasks > 0 ? completedTasks / totalTasks : 0.0;
+
     return Card(
       elevation: 0,
       shadowColor: ColorScheme.shadow.withOpacity(0.2),
@@ -64,7 +66,7 @@ class DailySummaryCard extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   child: LinearProgressIndicator(
                     minHeight: 8,
-                    value: completedTasks / totalTasks,
+                    value: progress,
                     backgroundColor: ColorScheme.surface.withOpacity(0.2),
                     valueColor: AlwaysStoppedAnimation(ColorScheme.primary),
                   ),
