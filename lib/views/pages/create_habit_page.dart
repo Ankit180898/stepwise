@@ -138,7 +138,7 @@ class CreateHabitPage extends HookConsumerWidget {
                           reminderTime.value != null
                               ? "${reminderTime.value!.hour % 12 == 0 ? 12 : reminderTime.value!.hour % 12}:${reminderTime.value!.minute.toString().padLeft(2, '0')} ${reminderTime.value!.hour >= 12 ? 'PM' : 'AM'}"
                               : "No time selected",
-                          style: TextStyle(fontSize: 16),
+                          style: const TextStyle(fontSize: 16),
                         ),
                       ],
                     ),
